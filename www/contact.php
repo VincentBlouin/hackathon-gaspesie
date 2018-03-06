@@ -78,15 +78,35 @@ if (isset($_POST['email'])) {
 
 //	@mail($email_to, $email_subject, $email_message, $headers);
 
-    $sendgrid = new \SendGrid($config->sendgridKey);
-    $email = new SendGrid\Email();
+    $request_body = json_decode('{
+  "personalizations": [
+    {
+      "to": [
+        {
+          "email": "'.$config->email->to.'"
+        }
+      ],
+      "subject": "Hackathon Gaspésie"
+    }
+  ],
+  "from": {
+    "email": "'.$config->email->from.'"
+  },
+  "content": [
+    {
+      "type": "text/plain",
+      "value": "' . $email_message . '"
+    }
+  ]
+}');
 
-    $email->addTo("vincent.blouin@gmail.com")
-        ->setFrom("vincent.blouin@gmail.com")
-        ->setSubject("Sending with SendGrid is Fun")
-        ->setHtml("and easy to do anywhere, even with PHP");
+    $apiKey = getenv($config->email->sendgridKey);
+    $sg = new \SendGrid($apiKey);
 
-    $sendgrid->send($email);
+    $response = $sg->client->mail()->send()->post($request_body);
+    echo $response->statusCode();
+    echo $response->body();
+    print_r($response->headers());
 
 
     ?>
