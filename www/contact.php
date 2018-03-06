@@ -79,7 +79,7 @@ if (isset($_POST['email'])) {
 //	@mail($email_to, $email_subject, $email_message, $headers);
 
     $sendgrid = new SendGrid($config->sengridKey);
-    $email = new SendGrid\Email();
+    $email = new SendGridEmail();
 
     $email->addTo("vincent.blouin@gmail.com")
         ->setFrom("vincent.blouin@gmail.com")
