@@ -7,11 +7,6 @@ $config = json_decode($jsonStr);
 if (isset($_POST['email'])) {
 
 
-    $email_to = "vincent.blouin@gmail.com";
-
-    $email_subject = "Hackathon Gaspésie";
-
-
     function died($error)
     {
 
