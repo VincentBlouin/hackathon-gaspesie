@@ -1,13 +1,19 @@
 <?php
 
-if(isset($_POST['email'])) {
+include_once "../sendgrid-php/sendgrid-php.php";
+$jsonStr = file_get_contents("../config.json");
+$config = json_decode($jsonStr);
+
+if (isset($_POST['email'])) {
+
 
     $email_to = "vincent.blouin@gmail.com";
 
     $email_subject = "Hackathon Gaspésie";
 
 
-    function died($error) {
+    function died($error)
+    {
 
         // your error code can go here
 
@@ -15,7 +21,7 @@ if(isset($_POST['email'])) {
 
         echo "These errors appear below.<br /><br />";
 
-        echo $error."<br /><br />";
+        echo $error . "<br /><br />";
 
         echo "Please go back and fix these errors.<br /><br />";
 
@@ -24,10 +30,9 @@ if(isset($_POST['email'])) {
     }
 
 
-
     // validation expected data exists
 
-    if(!isset($_POST['name']) ||
+    if (!isset($_POST['name']) ||
 
         !isset($_POST['email']) ||
 
@@ -46,48 +51,54 @@ if(isset($_POST['email'])) {
     $email_message = "Form details below.\n\n";
 
 
+    function clean_string($string)
+    {
 
-    function clean_string($string) {
+        $bad = array("content-type", "bcc:", "to:", "cc:", "href");
 
-      $bad = array("content-type","bcc:","to:","cc:","href");
-
-      return str_replace($bad,"",$string);
+        return str_replace($bad, "", $string);
 
     }
 
 
+    $email_message .= "Name: " . clean_string($name) . "\n";
 
-    $email_message .= "Name: ".clean_string($name)."\n";
+    $email_message .= "Email: " . clean_string($email) . "\n";
 
-    $email_message .= "Email: ".clean_string($email)."\n";
-
-    $email_message .= "Message: ".clean_string($message)."\n";
-
-
-	// create email headers
-
-	$headers = 'From: '.$email."\r\n".
-
-	'Reply-To: '.$email."\r\n" .
-
-	'X-Mailer: PHP/' . phpversion();
-
-	@mail($email_to, $email_subject, $email_message, $headers);
+    $email_message .= "Message: " . clean_string($message) . "\n";
 
 
-?>
+    // create email headers
+
+    $headers = 'From: ' . $email . "\r\n" .
+
+        'Reply-To: ' . $email . "\r\n" .
+
+        'X-Mailer: PHP/' . phpversion();
+
+//	@mail($email_to, $email_subject, $email_message, $headers);
+
+    $sendgrid = new SendGrid($config->sengridKey);
+    $email = new SendGrid\Email();
+
+    $email->addTo("vincent.blouin@gmail.com")
+        ->setFrom("vincent.blouin@gmail.com")
+        ->setSubject("Sending with SendGrid is Fun")
+        ->setHtml("and easy to do anywhere, even with PHP");
+
+    $sendgrid->send($email);
 
 
-
-<!-- include your own success html here -->
-
+    ?>
 
 
-Thank you for contacting me. Will be in touch with you very soon.
+    <!-- include your own success html here -->
 
 
+    Merci de nous avoir contacter, nous vous répondrons bientôt.
 
-<?php
+
+    <?php
 
 }
 
