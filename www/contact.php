@@ -100,22 +100,7 @@ if (isset($_POST['email'])) {
 
     $response = $sg->client->mail()->send()->post($request_body);
 
-    echo $response->statusCode();
-    echo $response->body();
-    print_r($response->headers());
-
-
-    ?>
-
-
-    <!-- include your own success html here -->
-
-
-    Merci de nous avoir contacter, nous vous répondrons bientôt.
-
-
-    <?php
+    http_response_code($response->statusCode());
 
 }
 
-?>
