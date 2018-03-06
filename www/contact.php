@@ -1,6 +1,6 @@
 <?php
 
-include_once "../sendgrid-php/sendgrid-php.php";
+include_once "sendgrid-php/sendgrid-php.php";
 $jsonStr = file_get_contents("../config.json");
 $config = json_decode($jsonStr);
 
@@ -79,7 +79,7 @@ if (isset($_POST['email'])) {
 //	@mail($email_to, $email_subject, $email_message, $headers);
 
     $sendgrid = new SendGrid($config->sengridKey);
-    $email = new SendGridEmail();
+    $email = new SendGrid\Email();
 
     $email->addTo("vincent.blouin@gmail.com")
         ->setFrom("vincent.blouin@gmail.com")
