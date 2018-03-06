@@ -101,6 +101,7 @@ if (isset($_POST['email'])) {
 }');
 
     $apiKey = $config->email->sendgridKey;
+    echo $apiKey;
     $sg = new \SendGrid($apiKey);
 
     $response = $sg->client->mail()->send()->post($request_body);
